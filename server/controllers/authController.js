@@ -4,6 +4,7 @@ const User = require('../models/user');
 
 const router = express.Router();
 
+// endpoint para login
 router.post('/login', async (req, res) => {
   const {email, senha} = req.body;
 
@@ -21,5 +22,24 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'erro no servidor '});
   }
 });
+
+//endpoint para cadastro de usuário
+router.post('/createAccount', async (req, res) => {
+  const {nome, email, senha} = req.body;
+
+  try{
+    const existingUser = await User.findByEmail(email);
+    if(existingUser) {
+      return res.status(400).json({message: "Email já cadastrado"});
+    }
+
+    const newUser = await User.createUser(nome, email, senha);
+    return res.json({message: 'Usuário criado com sucesso!', userId: newUser.id});
+
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({message: 'Erro no servidor'});
+  }
+})
 
 module.exports = router;

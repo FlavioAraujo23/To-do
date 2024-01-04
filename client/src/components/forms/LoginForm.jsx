@@ -3,6 +3,7 @@ import SubmitButton from "../buttons/SubmitButton"
 import { fetchData } from "../../actions/fetch";
 import toast, { Toaster } from 'react-hot-toast';
 import ToastSuccess from "../customToasted/toastSuccess";
+import ToastFailed from "../customToasted/ToastFailed";
 
 const LoginForm = () => {
   const [email, setEmail]= useState('');
@@ -16,8 +17,11 @@ const LoginForm = () => {
       body: JSON.stringify({email, senha}),
       }
     const dados = await fetchData(url, options);
-    console.log(dados)
 
+    const toastOptions = {position: "bottom-right", duration: 2000}
+    !dados.message ? 
+    toast.custom(<ToastSuccess />, toastOptions) :
+    toast.custom(<ToastFailed />, toastOptions)
   }
 
   return (

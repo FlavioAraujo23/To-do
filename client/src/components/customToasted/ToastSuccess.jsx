@@ -19,7 +19,7 @@ const ToastSuccess = () => {
           onClick={() => toast.remove()}
         >
           <FontAwesomeIcon 
-            className='text-green-400 w-4 h-4'
+            className='text-green-400 w-4 h-4 cursor-pointer hover:text-green-300'
             icon={faXmark} 
           />
         </button>

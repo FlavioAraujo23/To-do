@@ -20,8 +20,8 @@ const LoginForm = () => {
 
     const toastOptions = {position: "bottom-right", duration: 2000}
     !dados.message ? 
-    toast.custom(<ToastSuccess />, toastOptions) :
-    toast.custom(<ToastFailed />, toastOptions)
+    toast.custom(<ToastSuccess title='Login successfully' />, toastOptions) :
+    toast.custom(<ToastFailed title='Failed to login' subtitle='An error occured, check if the password and/or email are correct' />, toastOptions)
   }
 
   return (

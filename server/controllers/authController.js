@@ -26,11 +26,10 @@ router.post('/login', async (req, res) => {
 //endpoint para cadastro de usuário
 router.post('/createAccount', async (req, res) => {
   const {nome, email, senha} = req.body;
-
   try{
     const existingUser = await User.findByEmail(email);
     if(existingUser) {
-      return res.status(400).json({message: "Email já cadastrado"});
+      return res.json({message: "Email já cadastrado"});
     }
 
     const newUser = await User.createUser(nome, email, senha);

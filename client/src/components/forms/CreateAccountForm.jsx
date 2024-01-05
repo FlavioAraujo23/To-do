@@ -1,9 +1,71 @@
+import { useState } from 'react';
 import SubmitButton from '../buttons/SubmitButton'
+import { fetchData } from '../../actions/fetch';
+import toast, { Toaster } from 'react-hot-toast';
+import ToastSuccess from '../customToasted/toastSuccess';
+import ToastFailed from '../customToasted/ToastFailed';
+import validateForm from '../../actions/validateForm';
 
 const CreateAccountForm = () => {
+  const [nomeCompleto, setNomeCompleto] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const toastOptions = {position: "bottom-right", duration: 2000};
+
+  function validateAform (e){
+    e.preventDefault();
+    const dadosValidos = validateForm(email, senha);
+    if(dadosValidos.emailIsValidate === false) {
+      toast.custom(
+        <ToastFailed 
+          title='Failed to register'
+          subtitle='Enter a valid email'
+        />, toastOptions
+      )
+      return;
+    }
+
+    if(dadosValidos.passwordIsValidate === false) {
+      toast.custom(
+        <ToastFailed
+          title='Failed to register'
+          subtitle='Your password must have at least 8 characters, letters and numbers'
+        />, toastOptions
+      )
+      return;
+    }
+    createAccount();
+  }
+// User already exists
+  async function createAccount() {
+    const url = 'http://localhost:3000/auth/createAccount';
+    const postData = {
+      nome: nomeCompleto,
+      email,
+      senha,
+    }
+
+    const options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(postData),
+      };
+
+    const dados = await fetchData(url, options);
+
+    const toastOptions = {position: "bottom-right", duration: 2000}
+    if (dados.userId){
+      toast.custom(<ToastSuccess title={'Registration completed'}/>, toastOptions)
+    }
+
+    if (dados.message === "Email já cadastrado") {
+      toast.custom(<ToastFailed title='Failed to register' subtitle='User already exists'/>, toastOptions)
+    }
+  }
+  
   return (
     <main className='w-screen flex gap-32'>
-    <div className="bg-greenMy w-1/2 h-screen">
+    <div className="w-1/2 h-screen" style={{backgroundColor:'#5AC7AA'}}>
       <div className="ml-5">relogio</div>
       <div className="w-32 text-white ml-5">
         <p>Everything you need to do in one place</p>
@@ -19,27 +81,47 @@ const CreateAccountForm = () => {
           </svg>
         </div>
       </div>
-        <form className="max-w-xs flex flex-col mt-48 gap-4">
+        <form className="max-w-xs flex flex-col mt-48 gap-4" onSubmit={validateAform}>
           <h2 className="font-bold text-center text-xl">Create <br /> Account</h2>
-          <label htmlFor="">
-            <input type="text" className="border-b w-full " placeholder='Full Name'/>
+          <label >
+            <input
+              type="text"
+              className="border-b w-full"
+              placeholder='Full Name'
+              value={nomeCompleto}
+              onChange={({target}) => {setNomeCompleto(target.value)
+                 }}
+            />
           </label>
-          <label htmlFor="">
-            <input type="text" placeholder='Email Address' className="border-b w-full"/>
+          <label >
+            <input 
+              type="text"
+              placeholder='Email Address'
+              className="border-b w-full"
+              value={email}
+              onChange={({target}) => setEmail(target.value)}
+            />
           </label>
-          <label htmlFor="">
-            <input type="password" className="border-b w-full " placeholder='Password'/>
+          <label >
+            <input 
+              type="password"
+              className="border-b w-full"
+              placeholder='Password'
+              value={senha}
+              onChange={({target}) => setSenha(target.value)}
+            />
           </label>
           <div className="mt-2">
             <SubmitButton title="Created Account"/>
           </div>
           <div className="flex relative">
-              <div className="w-full h-12 flex flex-col text-gray/90 pt-1">
-              <span>Already have an account</span>
-              <a className="border-b w-14 hover:text-gray/50 cursor-pointer">Log in</a>
+              <div className="w-full h-12 flex flex-col  pt-1">
+              <span className='text-gray-700'>Already have an account</span>
+              <a className="border-b w-14 text-gray-500 hover:text-gray-400/50 cursor-pointer">Log in</a>
               </div>
           </div>
         </form>
+        <Toaster />
     </div>
   </main>
   )

@@ -13,7 +13,11 @@ router.post('/login', async (req, res) => {
     
     if(user && bcrypt.compareSync(senha, user.senha)) {
       // Auth bem sucedida
-      return res.json({ userId: user.id});
+      return res.json({
+        userId: user.id,
+        nome: user.nome_completo,
+        email: user.email
+      });
     } else {
       return res.status(401).json({ message: 'Credenciais invalidas'}); 
     }
@@ -39,6 +43,6 @@ router.post('/createAccount', async (req, res) => {
     console.log(error);
     res.status(500).json({message: 'Erro no servidor'});
   }
-})
+});
 
 module.exports = router;

@@ -1,27 +1,39 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import SubmitButton from "../buttons/SubmitButton"
-import { fetchData } from "../../actions/fetch";
 import toast, { Toaster } from 'react-hot-toast';
 import ToastSuccess from "../customToasted/toastSuccess";
 import ToastFailed from "../customToasted/ToastFailed";
+import { UserContext } from "../../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const [email, setEmail]= useState('');
   const [senha, setSenha] = useState('');
+  const navigate = useNavigate();
+  const {userLogin, login} = useContext(UserContext);
+
   async function handleLogin(e) {
     e.preventDefault();
-    const url = 'http://localhost:3000/auth/login'
-    const options = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({email, senha}),
-      }
-    const dados = await fetchData(url, options);
 
+    const dados = await userLogin(email, senha);
+    
     const toastOptions = {position: "bottom-right", duration: 2000}
+
     !dados.message ? 
-    toast.custom(<ToastSuccess title='Login successfully' />, toastOptions) :
-    toast.custom(<ToastFailed title='Failed to login' subtitle='An error occured, check if the password and/or email are correct' />, toastOptions)
+    toast.custom(
+      <ToastSuccess
+        title='Login successfully' 
+      />, toastOptions) &&
+      setTimeout(() => navigate('/list'), 1000) :
+    toast.custom(
+      <ToastFailed 
+        title='Failed to login' 
+        subtitle='An error occured, check if the password and/or email are correct' 
+      />, toastOptions)
+  }
+
+  if(login) {
+    navigate('/list')
   }
 
   return (

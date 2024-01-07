@@ -20,6 +20,28 @@ class List {
       client.release();
     }
   }
+  static async getListsById(userId){
+    const client = await pool.connect();
+    try {
+      const result = await client.query(
+        `
+         SELECT lt.*
+         FROM listas_tarefas lt
+         LEFT JOIN convites c ON lt.id = c.lista_id
+         WHERE lt.usuario_id = $1 OR c.destinatario_id = $1
+        `, [userId]
+      );
+      const lists = result.rows;
+      return lists;
+
+    } catch(error) {
+      console.error('Erro ao buscar listas de tarefas:', error);
+      throw error;
+    } finally {
+      client.release();
+    }
+
+  }
 }
 
 module.exports = List;

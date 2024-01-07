@@ -1,0 +1,64 @@
+import { faPlus } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useContext, useEffect, useState } from "react"
+import { fetchData } from "../../actions/fetch";
+import { UserContext } from "../../context/UserContext";
+import ModalFormCreateList from "../forms/ModalFormCreateList";
+
+
+const AsideViewLists = () => {
+  const [userLists, setUserList] = useState(null);
+  const {login} = useContext(UserContext);
+  const [modal,setModal] = useState();
+  useEffect( () => {
+    async function getListsById() {
+      const url = 'http://localhost:3000/list/getList';
+      if(window.localStorage.getItem('id') && login ){
+      const userId = window.localStorage.getItem('id');
+      const options = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({userId}),
+        }
+
+      const listsFromUser = await fetchData(url, options);
+      if(listsFromUser) {
+        setUserList(listsFromUser.userListData);
+      }
+    }
+  }
+    getListsById();
+  }, []);
+
+  const fecharModal = () => {
+    setModal(false);
+  };
+
+  return (
+    <>
+      <aside className="container w-52 h-screen py-2 overflow-hidden border border-r border-gray-400">
+          <div className="flex justify-between px-2 pb-1 items-center border-b border-gray-400">
+            <h2 className="text-3xl font-bold text-gray-400/70">Lists</h2>
+            <button 
+              className="w-8 h-8 flex items-center justify-center rounded-md" 
+              style={{backgroundColor:'#5AC7AA'}}
+              onClick={() => setModal(true)}
+            >
+              <FontAwesomeIcon className="text-white w-5 h-5" icon={faPlus} />
+            </button>
+          </div>
+          <div>
+            {userLists && userLists.map(list => (
+              <div key={list.id} className="max-w-max py-2 px-4">
+                <h2 className="font-bold text-base text-gray-700">{list.titulo}</h2>
+                <p className="text-sm text-gray-400">{list.descricao}</p>
+              </div>
+            ))}
+          </div>
+      </aside>
+     {modal && <ModalFormCreateList estadoModal={modal} fecharModal={fecharModal}/>}
+    </>
+  )
+}
+
+export default AsideViewLists

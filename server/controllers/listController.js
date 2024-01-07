@@ -15,7 +15,7 @@ router.post('/create', async (req, res) => {
   try {
     const list = await List.createListInDb(listData);
 
-    res.json({list});
+    res.json([list]);
   } catch(error) {
     console.log(error);
     res.status(500).json({ message: 'erro no servidor'});
@@ -23,7 +23,7 @@ router.post('/create', async (req, res) => {
 })
 
 // endpoint para busca de listas
-router.get('/getList', async (req, res) => {
+router.post('/getList', async (req, res) => {
   const {userId} = req.body;
 
   try{

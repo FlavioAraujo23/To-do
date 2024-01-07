@@ -1,8 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import LoginForm from "./components/forms/LoginForm"
 import CreateAccountForm from "./components/forms/CreateAccountForm"
-import DivTest from "./components/forms/DivTest";
 import { UserStorage } from "./context/UserContext";
+import ListView from "./components/lists/ListView";
 
 
 
@@ -14,7 +14,7 @@ function App() {
           <Routes>
             <Route path="/" element={<CreateAccountForm />}/>
             <Route path="/login/*" element={<LoginForm />}/>
-            <Route path="/list" element={<DivTest/>} />
+            <Route path="/list" element={<ListView/>} />
           </Routes>
         </UserStorage>
       </BrowserRouter>

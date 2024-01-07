@@ -1,4 +1,4 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import SubmitButton from "../buttons/SubmitButton"
 import toast, { Toaster } from 'react-hot-toast';
 import ToastSuccess from "../customToasted/toastSuccess";
@@ -12,11 +12,16 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const {userLogin, login} = useContext(UserContext);
 
+  useEffect(() => {
+    if(login) {
+      navigate('/list')
+    }
+  }, []);
+
   async function handleLogin(e) {
     e.preventDefault();
 
     const dados = await userLogin(email, senha);
-    
     const toastOptions = {position: "bottom-right", duration: 2000}
 
     !dados.message ? 
@@ -30,10 +35,6 @@ const LoginForm = () => {
         title='Failed to login' 
         subtitle='An error occured, check if the password and/or email are correct' 
       />, toastOptions)
-  }
-
-  if(login) {
-    navigate('/list')
   }
 
   return (

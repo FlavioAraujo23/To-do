@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const authController = require('./controllers/authController');
+const listController = require('./controllers/listController');
 const cors = require('cors');
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(cors());
 
 app.use(bodyParser.json());
 app.use('/auth', authController);
+app.use('/list', listController);
 
 app.listen(PORT, () => {
   console.log(`servidor rodando na porta ${PORT}`);

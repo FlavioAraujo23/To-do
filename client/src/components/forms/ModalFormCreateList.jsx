@@ -9,7 +9,7 @@ const ModalFormCreateList = ({estadoModal, fecharModal }) => {
   const [member, setMember] = useState('');
   const [description, setDescription] = useState('');
   return (
-    <div className={estadoModal? 'mx-auto w-1/2 flex justify-center items-center' : 'hidden'}>
+    <div className={estadoModal? 'mx-auto w-1/2 flex justify-center items-center absolute z-10 left-1/4 top-20 bottom-20 ' : 'hidden'}>
       <div className='max-w-md w-72 px-4 border border-gray-100'>
         <div className='flex justify-between mb-5'>
           <h2 className='font-bold text-xl text-gray-800'>List</h2>

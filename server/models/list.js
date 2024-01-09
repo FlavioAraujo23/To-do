@@ -43,19 +43,19 @@ class List {
 
   }
 
-  static async inviteUserForList(listId, inviteUserId, ownerId) {
+  static async inviteUserForList(listId, inviteUserId, ownerId, name) {
     const client = await pool.connect();
 
       try{
         const result = await client.query(
           `
-            INSERT INTO convites (remetente_id, destinatario_id, lista_id)
-            VALUES ($1, $2, $3)
+            INSERT INTO convites (remetente_id, destinatario_id, lista_id, nome_destinatario)
+            VALUES ($1, $2, $3, $4)
             RETURNING *
           `,
-          [ownerId, inviteUserId, listId]
+          [ownerId, inviteUserId, listId, name]
         );
-        
+
         return result.rows[0];
       } catch (error) {
         console.error('Erro ao convidar usuário para a lista:', error);

@@ -38,11 +38,11 @@ router.post('/getList', async (req, res) => {
 
 // endpoint para convidar usuário para lista
 router.post('/invite', async (req, res) => {
-  const {inviteEmail, listId, ownerId} = req.body;
+  const {inviteEmail, listId, ownerId, name} = req.body;
   
   try{
     const user = await User.findByEmail(inviteEmail);
-    const result = await List.inviteUserForList(listId, user.id, ownerId);
+    const result = await List.inviteUserForList(listId, user.id, ownerId, name);
     res.json({result})
   } catch(error) {
     console.log(error);

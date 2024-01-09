@@ -42,6 +42,28 @@ class List {
     }
 
   }
+
+  static async inviteUserForList(listId, inviteUserId, ownerId) {
+    const client = await pool.connect();
+
+      try{
+        const result = await client.query(
+          `
+            INSERT INTO convites (remetente_id, destinatario_id, lista_id)
+            VALUES ($1, $2, $3)
+            RETURNING *
+          `,
+          [ownerId, inviteUserId, listId]
+        );
+        
+        return result.rows[0];
+      } catch (error) {
+        console.error('Erro ao convidar usuário para a lista:', error);
+        throw error;
+      } finally {
+        client.release();
+      }
+  }
 }
 
 module.exports = List;

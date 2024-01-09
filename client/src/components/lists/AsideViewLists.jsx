@@ -8,10 +8,14 @@ import ModalFormCreateList from "../forms/ModalFormCreateList";
 
 const AsideViewLists = () => {
   const [userLists, setUserList] = useState(null);
+  const [activeListId, setActiveListId] = useState(null);
   const {login} = useContext(UserContext);
   const [modal,setModal] = useState();
+  const defaultStyles = 'text-left max-w-max py-2 px-4 hover:bg-gray-200/50'
+
   useEffect( () => {
     async function getListsById() {
+      window.localStorage.removeItem('activeList')
       const url = 'http://localhost:3000/list/getList';
       if(window.localStorage.getItem('id') && login ){
       const userId = window.localStorage.getItem('id');
@@ -29,6 +33,11 @@ const AsideViewLists = () => {
   }
     getListsById();
   }, []);
+
+  const handleListClick = (listId) => {
+    setActiveListId(listId);
+    window.localStorage.setItem('activeList', listId)
+  };
 
   const fecharModal = () => {
     setModal(false);
@@ -49,10 +58,14 @@ const AsideViewLists = () => {
           </div>
           <div>
             {userLists && userLists.map(list => (
-              <div key={list.id} className="max-w-max py-2 px-4">
-                <h2 className="font-bold text-base text-gray-700">{list.titulo}</h2>
-                <p className="text-sm text-gray-400">{list.descricao}</p>
-              </div>
+              <button 
+                key={list.id}
+                onClick={() => handleListClick(list.id)} 
+                className={list.id === activeListId ? defaultStyles+' bg-gray-200 transition-all border-r-4 border-emerald-400' : defaultStyles}
+                >
+                <h2 className="font-bold text-sm text-gray-700">{list.titulo}</h2>
+                <p className="text-xs text-gray-400">{list.descricao}</p>
+              </button>
             ))}
           </div>
       </aside>

@@ -6,12 +6,17 @@ class List {
 
     try{
       const result = await client.query(
-        'INSERT INTO listas_tarefas(titulo, descricao, membro, usuario_id) VALUES($1, $2, $3, $4) RETURNING id',
+        'INSERT INTO listas_tarefas(titulo, descricao, membro, usuario_id) VALUES($1, $2, $3, $4) RETURNING *',
         [listData.titulo, listData.descricao, listData.membro, listData.usuario_id]
       );
 
-      const listid = result.rows[0].id;
-      return listid;
+      const list = result.rows[0];
+
+      await client.query(
+        'INSERT INTO listas_usuarios(lista_id,usuario_id) VALUES($1, $2) RETURNING *',
+        [list.id, listData.usuario_id]
+      );
+      return list;
 
     } catch (error) {
       console.error('Erro ao salvar a lista de tarefas:', error);
@@ -59,6 +64,27 @@ class List {
         return result.rows[0];
       } catch (error) {
         console.error('Erro ao convidar usuário para a lista:', error);
+        throw error;
+      } finally {
+        client.release();
+      }
+  }
+
+  static async createTodoInDb(title, progress, member, description, listId) {
+    const client = await pool.connect();
+
+    try{
+      const result = await client.query(
+        `
+          INSERT INTO tarefas (titulo, descricao, progresso, lista_id, membro)
+          VALUES ($1, $2, $3, $4, $5) 
+          RETURNING *
+        `,
+        [title, description, progress, listId, member]
+      )
+      return result.rows[0]
+    } catch (error) {
+        console.error('Erro ao criar tarefa:', error);
         throw error;
       } finally {
         client.release();

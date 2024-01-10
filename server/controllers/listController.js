@@ -1,6 +1,6 @@
 const express = require('express');
 const List = require('../models/list');
-const createWsChannelWithPusher = require('../ws/pusher');
+const Pusher = require('../models/pusher');
 const User = require('../models/user');
 
 const router = express.Router();
@@ -15,8 +15,10 @@ router.post('/create', async (req, res) => {
                     usuario_id: userId
                   };
   try {
-    const list = await List.createListInDb(listData);    
-    res.json([list]);
+    const list = await List.createListInDb(listData); 
+    const channel = await Pusher.createWsChannelWithPusher(list);
+    const id = list.id
+    res.json({id, channel});
   } catch(error) {
     console.log(error);
     res.status(500).json({ message: 'erro no servidor'});
@@ -44,6 +46,20 @@ router.post('/invite', async (req, res) => {
     const user = await User.findByEmail(inviteEmail);
     const result = await List.inviteUserForList(listId, user.id, ownerId, name);
     res.json({result})
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: "erro no servidor"});
+  }
+})
+
+// endpoint para criar todo
+router.post('/todoCreate', async (req, res) => {
+  const {title, progress, member, description, listId, channelName} = req.body;
+
+  try {
+    const result = await List.createTodoInDb(title, progress, member, description, listId);
+    await Pusher.createEventInPusher(channelName, result);
+    res.json([result.id]);
   } catch(error) {
     console.log(error);
     res.status(500).json({ message: "erro no servidor"});

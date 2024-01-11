@@ -64,6 +64,19 @@ router.post('/todoCreate', async (req, res) => {
     console.log(error);
     res.status(500).json({ message: "erro no servidor"});
   }
+});
+
+// endpoint para listar as todos
+router.post('/getTodo', async (req, res) => {
+  const {listId, state} = req.body;
+
+  try {
+    const todos = await List.getTodos(listId, state);
+    res.json(todos)
+  } catch(error) {
+    console.log(error);
+    res.status(500).json({ message: "erro no servidor"});
+  }
 })
 
 module.exports = router;

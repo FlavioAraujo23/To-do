@@ -90,6 +90,28 @@ class List {
         client.release();
       }
   }
+
+  static async getTodos(listId, state) {
+    const client = await pool.connect();
+
+    try {
+      const result = await client.query(
+      ` 
+        SELECT *
+        FROM tarefas
+        WHERE lista_id = $1
+        AND progresso = $2;
+      `,
+      [listId, state]
+      )
+      return result.rows;
+    }catch (error) {
+        console.error('Erro ao listar tarefas:', error);
+        throw error;
+      } finally {
+        client.release();
+      }
+  }
 }
 
 module.exports = List;

@@ -3,16 +3,25 @@ import AddTodoButton from "../buttons/AddTodoButton"
 import DeleteTodoButton from "../buttons/DeleteTodoButton"
 import InviteTodoButton from "../buttons/InviteTodoButton"
 import InviteModalForm from "../forms/InviteModalForm"
+import CreateTodoForm from "../forms/CreateTodoForm"
 
 const ListHomework = () => {
   const [modalInvite, setModalinvite] = useState();
-
+  const [modalTodo, setModalTodo] = useState();
   function handleOpenModal() {
     setModalinvite(true);
   }
 
   function handleCloseModal() {
     setModalinvite(false);
+  }
+
+  function handleOpen() {
+    setModalTodo(true);
+  }
+
+  function handleClose() {
+    setModalTodo(false)
   }
 
   return (
@@ -23,12 +32,13 @@ const ListHomework = () => {
           <div className="pr-4">
             <DeleteTodoButton />
           </div>
-          <AddTodoButton />
+          <AddTodoButton onClick={handleOpen} />
           <InviteTodoButton onClick={handleOpenModal} />
         </div>
        
       </header>
        {modalInvite && <InviteModalForm estadoModal={modalInvite} fecharModal={handleCloseModal}/>}
+       {modalTodo && <CreateTodoForm estadoModal={modalTodo} fecharModal={handleClose}/>}
     </main>
   )
 }

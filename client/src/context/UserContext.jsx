@@ -36,6 +36,8 @@ export const UserStorage = ({ children }) => {
     setLogin(false);
     window.localStorage.removeItem('id');
     window.localStorage.removeItem('userData');
+    window.localStorage.removeItem('activeList')
+    window.localStorage.removeItem('channelName');
   }
 
 

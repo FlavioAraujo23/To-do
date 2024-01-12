@@ -8,14 +8,20 @@ import ModalFormCreateList from "../forms/ModalFormCreateList";
 
 const AsideViewLists = () => {
   const [userLists, setUserList] = useState(null);
-  const [activeListId, setActiveListId] = useState(null);
+  const [activeListId, setActiveListId] = useState(() => {
+    const idList = window.localStorage.getItem('activeList');
+    return !idList ? null : idList 
+  } );
   const {login} = useContext(UserContext);
   const [modal,setModal] = useState();
   const defaultStyles = 'text-left max-w-max py-2 px-4 hover:bg-gray-200/50'
 
   useEffect( () => {
     async function getListsById() {
-      window.localStorage.removeItem('activeList')
+      const idList = window.localStorage.getItem('activeList');
+      if(!idList) {
+        window.localStorage.removeItem('activeList');
+      }
       const url = 'http://localhost:3000/list/getList';
       if(window.localStorage.getItem('id') && login ){
       const userId = window.localStorage.getItem('id');
@@ -60,7 +66,8 @@ const AsideViewLists = () => {
             {userLists && userLists.map(list => (
               <button 
                 key={list.id}
-                onClick={() => handleListClick(list.id)} 
+                onClick={() => handleListClick(list.id)}
+                
                 className={list.id === activeListId ? defaultStyles+' bg-gray-200 transition-all border-r-4 border-emerald-400' : defaultStyles}
                 >
                 <h2 className="font-bold text-sm text-gray-700">{list.titulo}</h2>

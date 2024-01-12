@@ -11,8 +11,8 @@ const CreateTodoForm = ({estadoModal, fecharModal}) => {
   const [description, setDescription] = useState('');
   
   return (
-    <div className={estadoModal? 'mx-auto w-1/2 flex justify-end items-center absolute right-0 pt-4 pr-8' : 'hidden'}>
-    <div className='max-w-md w-72 px-4 py-2 border border-gray-200'>
+    <div className={estadoModal? 'mx-auto w-1/2 flex justify-end items-center absolute right-0 pt-4 pr-8 z-20' : 'hidden'}>
+    <div className='max-w-md w-72 px-4 py-2 border border-gray-200 bg-white'>
       <div className='flex justify-between mb-5'>
         <h2 className='font-bold text-xl text-gray-800'>To do</h2>
         <button onClick={fecharModal}>

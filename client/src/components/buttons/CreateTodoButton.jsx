@@ -11,7 +11,6 @@ const CreateTodoButton = ({ title, progress, member, description }) => {
     const listId = window.localStorage.getItem('activeList');
     const channelName = window.localStorage.getItem('channelName');
     const toastOptions = {position: "bottom-right", duration: 2000};
-    console.log(progress)
     if(validate) {
       if(listId) {
         const url = 'http://localhost:3000/list/todoCreate';

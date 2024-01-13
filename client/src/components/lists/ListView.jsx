@@ -3,7 +3,7 @@ import AsideViewLists from "./AsideViewLists"
 import ListHomework from "./ListHomework"
 import { faArrowTurnUp, faGear, faUser } from "@fortawesome/free-solid-svg-icons"
 import { UserContext } from "../../context/UserContext"
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 
 const ListView = () => {
@@ -16,6 +16,13 @@ const ListView = () => {
     }
   }, [login, navigate]);
 
+  // eslint-disable-next-line no-unused-vars
+  const [activeListId, setActiveListId] = useState();
+
+  const handleListClick = (listId) => {
+    setActiveListId(listId);
+    window.localStorage.setItem('activeList', listId);
+  };
 
   return (
     <aside className="flex container">
@@ -29,7 +36,7 @@ const ListView = () => {
         </button>
 
       </div>
-      <AsideViewLists />
+      <AsideViewLists handleClick={handleListClick} />
       <ListHomework />
     </aside>
   )

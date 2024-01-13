@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { faPlus } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useContext, useEffect, useState } from "react"
@@ -6,11 +7,11 @@ import { UserContext } from "../../context/UserContext";
 import ModalFormCreateList from "../forms/ModalFormCreateList";
 
 
-const AsideViewLists = () => {
+const AsideViewLists = ({ handleClick }) => {
   const [userLists, setUserList] = useState(null);
   const [activeListId, setActiveListId] = useState(() => {
     const idList = window.localStorage.getItem('activeList');
-    return !idList ? null : idList 
+    return !idList ? null : +idList 
   } );
   const {login} = useContext(UserContext);
   const [modal,setModal] = useState();
@@ -43,6 +44,7 @@ const AsideViewLists = () => {
   }, []);
 
   const handleListClick = (listId) => {
+    handleClick(listId);
     setActiveListId(listId);
     window.localStorage.setItem('activeList', listId)
   };

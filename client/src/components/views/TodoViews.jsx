@@ -6,36 +6,55 @@ import { fetchData } from '../../actions/fetch'
 import { pusher } from '../../actions/pusher'
 
 const TodoViews = ({ state }) => {
-  const [todos, setTodos] = useState();
+  const [todos, setTodos] = useState([]);
+  const [todosIds, setTodosIds] = useState();
   const borderColor = state === 'Todo' ? '#000' : state === 'Doing' ? '#efeba9' : '#5ac7aa'
   const listIsActive = window.localStorage.getItem('activeList');
 
-    useEffect( () => {
+  useEffect(() => {
+    const listId = window.localStorage.getItem('activeList');
+  
+    async function getTodos() {
+      const url = 'http://localhost:3000/list/getTodo';
+      const options = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ listId, state }),
+      };
+      const result = await fetchData(url, options);
+      if (result) {
+        setTodos(result);
+        const filteredIds = result
+          .filter((todo) => todo.id !== null)
+          .map((todo) => todo.id);
+        setTodosIds(filteredIds);
+      }
+    }
+  
+    if (listId) {
+      getTodos();
+    }
+  }, [listIsActive, state]);
+  
+  useEffect(() => {
+    if (todosIds !== undefined && todosIds.length > 0) {
+      const handleTodoFromPusher = (data) => {
+        const idAlreadyExists = todosIds.includes(data.content.id);
+        if (data.content.progresso === state && !idAlreadyExists) {
+          setTodos((prevTodos) => [...prevTodos, data.content]);
+        }
+      };
+  
       const listId = window.localStorage.getItem('activeList');
-      async function getTodos() {
-        const url = 'http://localhost:3000/list/getTodo';
-        const options = {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({listId, state}),
-        };
-        const result = await fetchData(url, options);
-        if(result) {
-          setTodos(result);
-        }
+      const channelName = listId ? window.localStorage.getItem('channelName') || `list-${listId}-channel` : null;
+  
+      if (channelName) {
+        const channel = pusher.subscribe(channelName);
+        channel.bind('TODO-CREATED', handleTodoFromPusher);
       }
-      if(listId){
-        getTodos();
-        const channelName = window.localStorage.getItem('channelName')  || `list-${listId}-channel`
-        if( channelName) {
-          const channel = pusher.subscribe(channelName);
-          channel.bind('TODO-CREATED', (data) => {
-            console.log(data);
-          })
-        }
-      }
-    }, [listIsActive])
-
+    }
+  }, [state, todosIds]);
+    
   return (
     <>
       {todos && listIsActive && todos.map(todo => (
@@ -53,7 +72,7 @@ const TodoViews = ({ state }) => {
             </label>
           </div>
           <div className='flex items-center gap-4 pt-2'>
-            <p className='text-xs w-36 h-max'>{todo.descricao}</p>
+            <p className='text-xs w-36 h-9 overflow-hidden'>{todo.descricao}</p>
             <div className='flex items-center gap-2'>
               <FontAwesomeIcon className='w-3 h-3' icon={faUser} />
               <p>{todo.membro}</p>

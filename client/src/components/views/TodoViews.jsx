@@ -8,7 +8,8 @@ import { pusher } from '../../actions/pusher'
 const TodoViews = ({ state }) => {
   const [todos, setTodos] = useState();
   const borderColor = state === 'Todo' ? '#000' : state === 'Doing' ? '#efeba9' : '#5ac7aa'
-  
+  const listIsActive = window.localStorage.getItem('activeList');
+
     useEffect( () => {
       const listId = window.localStorage.getItem('activeList');
       async function getTodos() {
@@ -25,17 +26,19 @@ const TodoViews = ({ state }) => {
       }
       if(listId){
         getTodos();
-        const channel = pusher.subscribe(window.localStorage.getItem('channelName'));
-        channel.bind('TODO-CREATED', (data) => {
-          console.log(data);
-        })
-
+        const channelName = window.localStorage.getItem('channelName')  || `list-${listId}-channel`
+        if( channelName) {
+          const channel = pusher.subscribe(channelName);
+          channel.bind('TODO-CREATED', (data) => {
+            console.log(data);
+          })
+        }
       }
-    }, [])
+    }, [listIsActive])
 
   return (
     <>
-      {todos && todos.map(todo => (
+      {todos && listIsActive && todos.map(todo => (
         <div key={todo.id} className="flex flex-col p-2 rounded-lg bg-orange-100/20" style={{ border: `4px dashed ${borderColor}`}}>
           <div className="flex items-center gap-2 ">
             <FontAwesomeIcon className='w-3 h-3' icon={faNoteSticky} />

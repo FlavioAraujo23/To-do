@@ -29,7 +29,7 @@ const CreateButton = ({type, title, member, description}) => {
       const result = await fetchData(url, options);
       if(result) {
         toast.success('Success, the list is created!', toastOptions);
-        window.localStorage.setItem('channelName', result.channel)
+        window.localStorage.setItem('channelName', result.channel);
         setTimeout(() => window.location.reload(), 1000);
         
       }

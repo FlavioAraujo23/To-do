@@ -15,6 +15,7 @@ const AsideViewLists = () => {
   const {login} = useContext(UserContext);
   const [modal,setModal] = useState();
   const defaultStyles = 'text-left max-w-max py-2 px-4 hover:bg-gray-200/50'
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   useEffect( () => {
     async function getListsById() {
@@ -34,6 +35,7 @@ const AsideViewLists = () => {
       const listsFromUser = await fetchData(url, options);
       if(listsFromUser) {
         setUserList(listsFromUser.userListData);
+        setDataLoaded(true);
       }
     }
   }
@@ -63,12 +65,12 @@ const AsideViewLists = () => {
             </button>
           </div>
           <div>
-            {userLists && userLists.map(list => (
+            {dataLoaded && userLists && userLists.map(list => (
               <button 
                 key={list.id}
                 onClick={() => handleListClick(list.id)}
                 
-                className={list.id === activeListId ? defaultStyles+' bg-gray-200 transition-all border-r-4 border-emerald-400' : defaultStyles}
+                className={list.id !== activeListId ? defaultStyles : defaultStyles+' bg-gray-200 transition-all border-r-4 border-emerald-400'}
                 >
                 <h2 className="font-bold text-sm text-gray-700">{list.titulo}</h2>
                 <p className="text-xs text-gray-400">{list.descricao}</p>

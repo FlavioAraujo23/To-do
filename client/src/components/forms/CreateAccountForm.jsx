@@ -5,12 +5,14 @@ import toast, { Toaster } from 'react-hot-toast';
 import ToastSuccess from '../customToasted/toastSuccess';
 import ToastFailed from '../customToasted/ToastFailed';
 import validateForm from '../../actions/validateForm';
+import { Link, useNavigate } from 'react-router-dom';
 
 const CreateAccountForm = () => {
   const [nomeCompleto, setNomeCompleto] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const toastOptions = {position: "bottom-right", duration: 2000};
+  const navigate = useNavigate();
 
   function validateAform (e){
     e.preventDefault();
@@ -36,7 +38,7 @@ const CreateAccountForm = () => {
     }
     createAccount();
   }
-// User already exists
+
   async function createAccount() {
     const url = 'http://localhost:3000/auth/createAccount';
     const postData = {
@@ -56,6 +58,9 @@ const CreateAccountForm = () => {
     const toastOptions = {position: "bottom-right", duration: 2000}
     if (dados.userId){
       toast.custom(<ToastSuccess title={'Registration completed'}/>, toastOptions)
+      setTimeout(() => {
+        navigate('/login')
+      }, 2000)
     }
 
     if (dados.message === "Email já cadastrado") {
@@ -81,44 +86,43 @@ const CreateAccountForm = () => {
           </svg>
         </div>
       </div>
-        <form className="max-w-xs flex flex-col mt-48 gap-4" onSubmit={validateAform}>
-          <h2 className="font-bold text-center text-xl">Create <br /> Account</h2>
-          <label >
+        <form className="max-w-xs flex flex-col mt-32 gap-4" onSubmit={validateAform}>
+          <h2 className="font-bold text-center text-xl">Create <br /> Account</h2>  
             <input
               type="text"
-              className="border-b w-full"
+              className="border-b w-full focus:outline-none focus:border-b-gray-400"
               placeholder='Full Name'
               value={nomeCompleto}
               onChange={({target}) => {setNomeCompleto(target.value)
                  }}
-            />
-          </label>
-          <label >
+            /> 
             <input 
               type="text"
               placeholder='Email Address'
-              className="border-b w-full"
+              className="border-b w-full focus:outline-none focus:border-b-gray-400"
               value={email}
               onChange={({target}) => setEmail(target.value)}
             />
-          </label>
-          <label >
             <input 
               type="password"
-              className="border-b w-full"
+              className="border-b w-full focus:outline-none focus:border-b-gray-400"
               placeholder='Password'
               value={senha}
               onChange={({target}) => setSenha(target.value)}
             />
-          </label>
           <div className="mt-2">
             <SubmitButton title="Created Account"/>
           </div>
           <div className="flex relative">
-              <div className="w-full h-12 flex flex-col  pt-1">
-              <span className='text-gray-700'>Already have an account</span>
-              <a className="border-b w-14 text-gray-500 hover:text-gray-400/50 cursor-pointer">Log in</a>
-              </div>
+            <div className="w-full h-12 flex flex-col pt-1 text-gray-400">
+              <span>Already have an account?</span>
+              <Link 
+                to={'/login'}
+                className="border-b w-14 hover:text-gray-400/50 cursor-pointer underline"
+              >
+                Log in
+              </Link>
+            </div>
           </div>
         </form>
         <Toaster />

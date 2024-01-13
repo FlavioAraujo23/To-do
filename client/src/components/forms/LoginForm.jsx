@@ -4,7 +4,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import ToastSuccess from "../customToasted/toastSuccess";
 import ToastFailed from "../customToasted/ToastFailed";
 import { UserContext } from "../../context/UserContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const [email, setEmail]= useState('');
@@ -64,7 +64,7 @@ const LoginForm = () => {
               <input 
                 type="text"
                 placeholder='Email Address'
-                className="border-b w-full"
+                className="border-b w-full focus:outline-none focus:border-b-gray-400"
                 value={email}
                 onChange={({ target }) => setEmail(target.value)}
               />
@@ -72,7 +72,7 @@ const LoginForm = () => {
             <label htmlFor="">
               <input 
                 type="password" 
-                className="border-b w-full"
+                className="border-b w-full focus:outline-none focus:border-b-gray-400"
                 value={senha}
                 onChange={({ target }) => setSenha(target.value)}
                 placeholder='Password'
@@ -82,9 +82,9 @@ const LoginForm = () => {
               <SubmitButton title="Login"/>
             </div>
             <div className="flex relative">
-                <div className="w-full h-12 flex flex-col text-gray-300/90 pt-1">
+                <div className="w-full h-12 flex flex-col text-gray-400 pt-1">
                 <span>Do not have an account yet?</span>
-                <a className="border-b w-14 hover:text-gray-300/50 cursor-pointer">Sign Up</a>
+                <Link className="border-b w-14 hover:text-gray-300 cursor-pointer underline" to={'/signUp'}>Sign Up</Link>
                 </div>
             </div>
           </form>

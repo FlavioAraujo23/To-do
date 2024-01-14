@@ -77,6 +77,22 @@ router.post('/getTodo', async (req, res) => {
     console.log(error);
     res.status(500).json({ message: "erro no servidor"});
   }
+});
+
+// endpoint para deletar todos
+router.post('/deleteTodo', async(req,res) => {
+  const {idTodo, channelName} = req.body;
+
+  try{
+    const result = await List.deleteTodo(idTodo);
+    if(result) {
+      await deleteTodoEvent(idTodo, channelName);
+    }
+    res.json(result)
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "erro no servidor"});
+  }
 })
 
 module.exports = router;

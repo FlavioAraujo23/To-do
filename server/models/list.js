@@ -106,11 +106,32 @@ class List {
       )
       return result.rows;
     }catch (error) {
-        console.error('Erro ao listar tarefas:', error);
+        console.error('Erro ao listar todos:', error);
         throw error;
       } finally {
         client.release();
       }
+  }
+
+  static async deleteTodo(idTodo) {
+    const client = await pool.connect();
+
+    try{
+      const result = await client.query(
+        `
+          DELETE FROM tarefas
+          WHERE id = $1;
+        `,
+        [idTodo]
+      )
+      return true;
+    } catch (error) {
+      console.error('Erro ao deletar todo:', error);
+      throw error;
+    } finally {
+      client.release();
+    }
+
   }
 }
 

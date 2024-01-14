@@ -15,13 +15,25 @@ class Pusher {
     }
   }
 
-  static async createEventInPusher(channel,task){
+  static async createEventInPusher(channel,task) {
     try{
       const payload = {
         content: task,
       };
       pusher.trigger(channel, 'TODO-CREATED', payload);
       return;
+    } catch (error) {
+      console.error('Erro ao criar event', error);
+      throw error;
+    }
+  }
+  static async deleteTodoEvent(todoId, channelName) {
+    try{
+      const payload = {
+        deletedTaskId: todoId,
+      };
+      pusher.trigger(channelName, 'TODO-DELETED', payload);
+      return true;
     } catch (error) {
       console.error('Erro ao criar event', error);
       throw error;

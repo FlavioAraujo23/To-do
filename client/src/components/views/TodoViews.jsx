@@ -7,13 +7,28 @@ import { pusher } from '../../actions/pusher'
 
 const TodoViews = ({ state }) => {
   const [todos, setTodos] = useState([]);
-  const [todosIds, setTodosIds] = useState();
   const borderColor = state === 'Todo' ? '#000' : state === 'Doing' ? '#efeba9' : '#5ac7aa'
   const listIsActive = window.localStorage.getItem('activeList');
+  const [channelName, setChannelName] = useState(() => {
+    const listId = window.localStorage.getItem('activeList');
+    const storedChannelName = window.localStorage.getItem('channelName');
+    const newChannelName = `list-${listId}-channel`;
+  
+    if (!storedChannelName) {
+      window.localStorage.setItem('channelName', newChannelName);
+    }
+  
+    return storedChannelName || newChannelName;
+  });
 
   useEffect(() => {
     const listId = window.localStorage.getItem('activeList');
-  
+    setChannelName(() => {
+      window.localStorage.setItem('channelName', `list-${listId}-channel`)
+      return `list-${listId}-channel`
+    });
+   
+
     async function getTodos() {
       const url = 'http://localhost:3000/list/getTodo';
       const options = {
@@ -23,11 +38,7 @@ const TodoViews = ({ state }) => {
       };
       const result = await fetchData(url, options);
       if (result) {
-        setTodos(result);
-        const filteredIds = result
-          .filter((todo) => todo.id !== null)
-          .map((todo) => todo.id);
-        setTodosIds(filteredIds);
+         setTodos(result);
       }
     }
   
@@ -35,31 +46,30 @@ const TodoViews = ({ state }) => {
       getTodos();
     }
   }, [listIsActive, state]);
-  
+
+
   useEffect(() => {
-    if (todosIds !== undefined && todosIds.length > 0) {
-      const handleTodoFromPusher = (data) => {
-        const idAlreadyExists = todosIds.includes(data.content.id);
-        if (data.content.progresso === state && !idAlreadyExists) {
-          setTodos((prevTodos) => [...prevTodos, data.content]);
+
+      const updateTodo = ({ content }) => {
+        if (content.progresso === state) {
+          setTodos((prevTodos) => [...prevTodos, content]);
         }
-      };
-  
-      const listId = window.localStorage.getItem('activeList');
-      const channelName = listId ? window.localStorage.getItem('channelName') || `list-${listId}-channel` : null;
-  
-      if (channelName) {
-        const channel = pusher.subscribe(channelName);
-        channel.bind('TODO-CREATED', handleTodoFromPusher);
       }
-    }
-  }, [state, todosIds]);
+
+      const channel = pusher.subscribe(channelName);
+        channel.bind('TODO-CREATED',updateTodo);
+        return () => {
+          channel.unbind('TODO-CREATED', updateTodo);
+        }
+
+  }, []);
+
     
   return (
     <>
       {todos && listIsActive && todos.map(todo => (
         <div key={todo.id} className="flex flex-col p-2 rounded-lg bg-orange-100/20" style={{ border: `4px dashed ${borderColor}`}}>
-          <div className="flex items-center gap-2 ">
+          <div className="flex justify-between items-center gap-2 ">
             <FontAwesomeIcon className='w-3 h-3' icon={faNoteSticky} />
             <h2 className='min-w-32 max-w-32 overflow-hidden font-bold text-sm'>{todo.titulo}</h2>
             <label className='border border-gray-200 rounded-md p-1'>

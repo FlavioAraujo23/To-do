@@ -29,11 +29,12 @@ class Pusher {
   }
   static async deleteTodoEvent(todoId, channelName) {
     try{
+      console.log(todoId)
       const payload = {
         deletedTaskId: todoId,
       };
       pusher.trigger(channelName, 'TODO-DELETED', payload);
-      return true;
+      return;
     } catch (error) {
       console.error('Erro ao criar event', error);
       throw error;

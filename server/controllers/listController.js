@@ -81,17 +81,18 @@ router.post('/getTodo', async (req, res) => {
 
 // endpoint para deletar todos
 router.post('/deleteTodo', async(req,res) => {
-  const {idTodo, channelName} = req.body;
-
-  try{
-    const result = await List.deleteTodo(idTodo);
-    if(result) {
-      await deleteTodoEvent(idTodo, channelName);
+  const {todoId, channelName} = req.body;
+  if(todoId !== undefined){
+    try{
+      const result = await List.deleteTodo(todoId);
+      await Pusher.deleteTodoEvent(todoId, channelName);
+      res.json(result)
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "erro no servidor"});
     }
-    res.json(result)
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "erro no servidor"});
+  } else {
+    res.status(500)
   }
 })
 

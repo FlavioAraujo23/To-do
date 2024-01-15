@@ -1,6 +1,6 @@
 import { useState } from "react"
 import AddTodoButton from "../buttons/AddTodoButton"
-import DeleteTodoButton from "../buttons/DeleteTodoButton"
+import DeleteTodoButton from "../buttons/DeleteButton"
 import InviteTodoButton from "../buttons/InviteTodoButton"
 import InviteModalForm from "../forms/InviteModalForm"
 import CreateTodoForm from "../forms/CreateTodoForm"

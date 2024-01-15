@@ -1,10 +1,24 @@
+/* eslint-disable react/prop-types */
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
-const DeleteTodoButton = () => {
+import { faX } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { fetchData } from '../../actions/fetch';
+
+const DeleteTodoButton = ({ todoId , channelName}) => {
+  async function handleDeleteTodo() {
+    const url = 'http://localhost:3000/list/deleteTodo';
+    const data = {todoId, channelName}
+    const options = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    };
+    const result = await fetchData(url, options);
+    return result;
+  }
   return (
-    <button className='rounded-full w-12 h-12 border border-black flex items-center justify-center p-1'>
-      <FontAwesomeIcon icon={faTrashCan} className='w-6 h-6' />
+    <button onClick={handleDeleteTodo}>
+      <FontAwesomeIcon icon={faX} className='w-3 h-3' />
     </button>
   )
 }

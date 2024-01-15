@@ -4,11 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
 import { fetchData } from '../../actions/fetch'
 import { pusher } from '../../actions/pusher'
+import DeleteTodoButton from '../buttons/DeleteTodoButton'
 
 const TodoViews = ({ state }) => {
   const [todos, setTodos] = useState([]);
   const borderColor = state === 'Todo' ? '#000' : state === 'Doing' ? '#efeba9' : '#5ac7aa'
   const listIsActive = window.localStorage.getItem('activeList');
+  const [deleted, setDeleted] = useState(false);
   const [channelName, setChannelName] = useState(() => {
     const listId = window.localStorage.getItem('activeList');
     const storedChannelName = window.localStorage.getItem('channelName');
@@ -49,7 +51,6 @@ const TodoViews = ({ state }) => {
 
 
   useEffect(() => {
-
       const updateTodo = ({ content }) => {
         if (content.progresso === state) {
           setTodos((prevTodos) => [...prevTodos, content]);
@@ -64,6 +65,23 @@ const TodoViews = ({ state }) => {
 
   }, []);
 
+  useEffect(() => {
+    const handleUpdateTodo = (data) => {
+      const removeTodoById = (todos, id) => {
+        return todos.filter((todo) => todo.id !== id);
+      };
+
+      setTodos((prevTodos) => removeTodoById(prevTodos, data.deletedTaskId))
+    }
+  
+    const channel = pusher.subscribe(channelName);
+    channel.bind('TODO-DELETED', handleUpdateTodo);
+  
+    // Cleanup quando o componente é desmontado
+    return () => {
+      channel.unbind('TODO-DELETED', handleUpdateTodo);
+    };
+  }, [deleted]);
     
   return (
     <>
@@ -80,6 +98,9 @@ const TodoViews = ({ state }) => {
                 <option value="Done">Done</option>
               </select>
             </label>
+            <div className='pb-8'>
+              <DeleteTodoButton todoId={todo.id} channelName={window.localStorage.getItem('channelName')} setDeleted={setDeleted}/>
+            </div>
           </div>
           <div className='flex items-center gap-4 pt-2'>
             <p className='text-xs w-36 h-9 overflow-hidden'>{todo.descricao}</p>

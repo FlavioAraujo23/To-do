@@ -9,7 +9,7 @@ const CreateTodoButton = ({ title, progress, member, description }) => {
   async function handleCreateTodo() {
     const validate = validateFormInputs(title, member, description);
     const listId = window.localStorage.getItem('activeList');
-    const channelName = window.localStorage.getItem('channelName');
+    const channelName = window.localStorage.getItem('channelName') || `list-${listId}-channel`;
     const toastOptions = {position: "bottom-right", duration: 2000};
     if(validate) {
       if(listId) {

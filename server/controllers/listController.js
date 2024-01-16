@@ -96,4 +96,19 @@ router.post('/deleteTodo', async(req,res) => {
   }
 })
 
+// endpoint para editar todo
+router.post('/updateTodo', async(req, res) => {
+  const {progress, idTodo, channelName} = req.body;
+  try{
+    const result = await List.updateTodo(idTodo, progress);
+    if(result){
+      await Pusher.updateTodoEvent(result, channelName);
+      res.json(result.id);
+    }
+    
+  } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "erro no servidor"});
+    }
+})
 module.exports = router;

@@ -131,7 +131,28 @@ class List {
     } finally {
       client.release();
     }
+  }
 
+  static async updateTodo(idTodo, progresso) {
+    const client = await pool.connect();
+
+    try{
+      const result = await client.query(
+        `
+          UPDATE tarefas
+          SET progresso = $1
+          WHERE id = $2
+          RETURNING *      
+        `,
+        [progresso, idTodo]
+      )
+      return result.rows;
+    } catch (error) {
+      console.error('Erro ao atualizar todo:', error);
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 }
 

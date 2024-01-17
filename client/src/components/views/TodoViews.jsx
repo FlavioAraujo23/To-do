@@ -8,20 +8,21 @@ import DeleteTodoButton from '../buttons/DeleteTodoButton'
 
 const TodoViews = ({ state }) => {
   const [todos, setTodos] = useState([]);
-  const borderColor = state === 'Todo' ? '#000' : state === 'Doing' ? '#efeba9' : '#5ac7aa'
+  const borderColor = state === 'Todo' ? '#000' : state === 'Doing' ? '#efeba9' : '#5ac7aa';
   const listIsActive = window.localStorage.getItem('activeList');
-  const [deleted, setDeleted] = useState(false);
+  const [update, setUpdate] = useState(null);
   const [channelName, setChannelName] = useState(() => {
     const listId = window.localStorage.getItem('activeList');
     const storedChannelName = window.localStorage.getItem('channelName');
     const newChannelName = `list-${listId}-channel`;
-  
+
     if (!storedChannelName) {
       window.localStorage.setItem('channelName', newChannelName);
     }
-  
+
     return storedChannelName || newChannelName;
   });
+  const channel = pusher.subscribe(channelName);
 
   useEffect(() => {
     const listId = window.localStorage.getItem('activeList');
@@ -29,8 +30,7 @@ const TodoViews = ({ state }) => {
       window.localStorage.setItem('channelName', `list-${listId}-channel`)
       return `list-${listId}-channel`
     });
-   
-
+    
     async function getTodos() {
       const url = 'http://localhost:3000/list/getTodo';
       const options = {
@@ -43,11 +43,11 @@ const TodoViews = ({ state }) => {
          setTodos(result);
       }
     }
-  
+
     if (listId) {
       getTodos();
     }
-  }, [listIsActive, state]);
+  }, [listIsActive, state, update]);
 
 
   useEffect(() => {
@@ -57,12 +57,10 @@ const TodoViews = ({ state }) => {
         }
       }
 
-      const channel = pusher.subscribe(channelName);
         channel.bind('TODO-CREATED',updateTodo);
         return () => {
           channel.unbind('TODO-CREATED', updateTodo);
         }
-
   }, []);
 
   useEffect(() => {
@@ -73,16 +71,53 @@ const TodoViews = ({ state }) => {
 
       setTodos((prevTodos) => removeTodoById(prevTodos, data.deletedTaskId))
     }
-  
-    const channel = pusher.subscribe(channelName);
+
     channel.bind('TODO-DELETED', handleUpdateTodo);
-  
-    // Cleanup quando o componente é desmontado
     return () => {
       channel.unbind('TODO-DELETED', handleUpdateTodo);
     };
-  }, [deleted]);
-    
+  }, []);
+
+  const updateTodo = async (event, idTodo) => {
+    const progress = event.target?.value;
+    if(progress !== null) {
+      const url = 'http://localhost:3000/list/updateTodo';
+      const options = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({progress, idTodo, channelName}),
+      };
+      await fetchData(url, options);
+      return;
+    }
+  }
+
+  useEffect(() => {
+    function eventUpdateTodo({ content }) {
+      setTodos((prevTodos) => {
+        const existingIndex = prevTodos.findIndex((todo) => todo.id === content.id);
+        if (existingIndex !== -1) {
+          const updatedTodos = [...prevTodos];
+          updatedTodos[existingIndex] = content;
+          if (state === content.progresso) {
+            return updatedTodos;
+          } else {
+            return prevTodos;
+          }
+        } else {
+          return state === content.progresso ? [...prevTodos, content] : prevTodos;
+        }
+      });
+      setUpdate(true)
+    }
+
+    channel.bind('TODO-UPDATED',eventUpdateTodo);
+    return () => {
+      channel.unbind('TODO-UPDATED', eventUpdateTodo);
+    }
+  }, []);
+
+
   return (
     <>
       {todos && listIsActive && todos.map(todo => (
@@ -92,14 +127,14 @@ const TodoViews = ({ state }) => {
             <h2 className='min-w-32 max-w-32 overflow-hidden font-bold text-sm'>{todo.titulo}</h2>
             <label className='border border-gray-200 rounded-md p-1'>
               <FontAwesomeIcon className='w-3 h-3' icon={faRocket}/>
-              <select className='focus:outline-none w-16 text-sm' defaultValue={todo.progresso}>
+              <select className='focus:outline-none w-16 text-sm' value={todo.progresso} onChange={(e) => updateTodo(e, todo.id)}>
                 <option value="Todo">To do</option>
                 <option value="Doing">Doing</option>
                 <option value="Done">Done</option>
               </select>
             </label>
             <div className='pb-8'>
-              <DeleteTodoButton todoId={todo.id} channelName={window.localStorage.getItem('channelName')} setDeleted={setDeleted}/>
+              <DeleteTodoButton todoId={todo.id} channelName={window.localStorage.getItem('channelName')} />
             </div>
           </div>
           <div className='flex items-center gap-4 pt-2'>
@@ -110,9 +145,9 @@ const TodoViews = ({ state }) => {
             </div>
           </div>
         </div>
-        
+
       ))}
-    </>   
+    </>
   )
 }
 

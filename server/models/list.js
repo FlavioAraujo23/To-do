@@ -146,7 +146,7 @@ class List {
         `,
         [progresso, idTodo]
       )
-      return result.rows;
+      return result.rows[0];
     } catch (error) {
       console.error('Erro ao atualizar todo:', error);
       throw error;

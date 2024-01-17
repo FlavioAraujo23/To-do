@@ -103,7 +103,7 @@ router.post('/updateTodo', async(req, res) => {
     const result = await List.updateTodo(idTodo, progress);
     if(result){
       await Pusher.updateTodoEvent(result, channelName);
-      res.json(result.id);
+      res.json([result.id]);
     }
     
   } catch (error) {

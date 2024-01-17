@@ -46,7 +46,7 @@ class Pusher {
       const payload = {
         content: data,
       };
-      pusher.trigger(channelName, 'TODO-UPDATE', payload);
+      pusher.trigger(channelName, 'TODO-UPDATED', payload);
       return;
     } catch (error) {
       console.error('Erro ao criar event', error);

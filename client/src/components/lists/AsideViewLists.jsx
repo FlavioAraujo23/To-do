@@ -7,7 +7,7 @@ import { UserContext } from "../../context/UserContext";
 import ModalFormCreateList from "../forms/ModalFormCreateList";
 
 
-const AsideViewLists = ({ handleClick }) => {
+const AsideViewLists = ({ handleClick, mobile, mobileMenu }) => {
   const [userLists, setUserList] = useState(null);
   const [activeListId, setActiveListId] = useState(() => {
     const idList = window.localStorage.getItem('activeList');
@@ -15,7 +15,7 @@ const AsideViewLists = ({ handleClick }) => {
   } );
   const {login} = useContext(UserContext);
   const [modal,setModal] = useState();
-  const defaultStyles = 'text-left max-w-max py-2 px-4 hover:bg-gray-200/50'
+  const defaultStyles = mobileMenu ? "text-left max-w-max py-2 px-1 hover:bg-gray-200/50" : 'text-left max-w-max py-2 px-4 hover:bg-gray-200/50'
   const [dataLoaded, setDataLoaded] = useState(false);
 
   useEffect( () => {
@@ -55,18 +55,18 @@ const AsideViewLists = ({ handleClick }) => {
 
   return (
     <>
-      <aside className="container w-52 h-screen py-2 overflow-hidden border border-r border-gray-400">
-          <div className="flex justify-between px-2 pb-1 items-center border-b border-gray-400">
-            <h2 className="text-3xl font-bold text-gray-400/70">Lists</h2>
+      <aside className={mobileMenu ? "w-max h-screen transition-all" : "w-52 h-screen py-2 overflow-hidden border border-r border-gray-400 md:hidden"}>
+          <div className={mobileMenu ? "flex gap-5 items-center pt-2 pb-1 px-2" : "flex justify-between px-2 pb-1 items-center border-b border-gray-400"}>
+            <h2 className={mobileMenu ? "text-sm font-bold text-gray-400/70" : "text-3xl font-bold text-gray-400/70"}>Lists</h2>
             <button 
-              className="w-8 h-8 flex items-center justify-center rounded-md" 
+              className={mobileMenu ? "w-6 h-6 flex items-center justify-center rounded-md " :"w-8 h-8 flex items-center justify-center rounded-md"} 
               style={{backgroundColor:'#5AC7AA'}}
               onClick={() => setModal(true)}
             >
               <FontAwesomeIcon className="text-white w-5 h-5" icon={faPlus} />
             </button>
           </div>
-          <div>
+          <div className={mobileMenu ? "flex flex-col" : ''}>
             {dataLoaded && userLists && userLists.map(list => (
               <button 
                 key={list.id}
@@ -74,8 +74,8 @@ const AsideViewLists = ({ handleClick }) => {
                 
                 className={list.id !== activeListId ? defaultStyles : defaultStyles+' bg-gray-200 transition-all border-r-4 border-emerald-400'}
                 >
-                <h2 className="font-bold text-sm text-gray-700">{list.titulo}</h2>
-                <p className="text-xs text-gray-400">{list.descricao}</p>
+                <h2 className={mobileMenu ? "text-xs font-bold" : "font-bold text-sm text-gray-700"}>{list.titulo}</h2>
+                <p className={mobileMenu ? "text-[0.7rem]" : "text-xs text-gray-400"}>{list.descricao}</p>
               </button>
             ))}
           </div>

@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 
-const InviteTodoButton = ({onClick}) => {
+const InviteTodoButton = ({onClick, mobile}) => {
   return (
     <button 
-    className="rounded-md w-40 h-10 flex items-center justify-center"
+    className={mobile ? "w-24 h-9 rounded-md flex items-center justify-center" : "rounded-md w-40 h-10 flex items-center justify-center"}
     style={{backgroundColor:'#5AC7AA'}}
     onClick={onClick}
   >
-    <span className="text-white font-bold">+ Invite People</span>  
+    <span className={mobile ? "text-white text-xs font-bold" : "text-white font-bold"}>+ Invite People</span>  
   </button>
   )
 }

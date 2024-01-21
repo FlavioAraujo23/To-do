@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import SubmitButton from "../buttons/SubmitButton"
 import toast, { Toaster } from 'react-hot-toast';
-import ToastSuccess from "../customToasted/toastSuccess";
+import ToastSuccess from "../customToasted/ToastSuccess";
 import ToastFailed from "../customToasted/ToastFailed";
 import { UserContext } from "../../context/UserContext";
 import { Link, useNavigate } from "react-router-dom";

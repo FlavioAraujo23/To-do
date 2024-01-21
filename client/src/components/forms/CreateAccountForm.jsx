@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import SubmitButton from '../buttons/SubmitButton'
 import { fetchData } from '../../actions/fetch';
 import toast, { Toaster } from 'react-hot-toast';
-import ToastSuccess from '../customToasted/toastSuccess';
+import ToastSuccess from '../customToasted/ToastSuccess';
 import ToastFailed from '../customToasted/ToastFailed';
 import validateForm from '../../actions/validateForm';
 import { Link, useNavigate } from 'react-router-dom';

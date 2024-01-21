@@ -6,7 +6,6 @@ const useMedia = (media) => {
   useEffect(() => {
     function changeMatch() {
       const {matches} = window.matchMedia(media);
-      console.log(matches)
       setMatch(matches)
     }
     window.addEventListener('resize', changeMatch);

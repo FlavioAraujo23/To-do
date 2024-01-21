@@ -2,8 +2,12 @@
 import toast, { Toaster } from "react-hot-toast";
 import validateFormInputs from "../../actions/validateInputs"
 import { fetchData } from "../../actions/fetch";
+import { UserContext } from "../../context/UserContext";
+import { useContext } from "react";
 
 const InviteFetchButton = ({email, name}) => {
+  const {urlBase} = useContext(UserContext);
+
   async function handleInvitePeople() {
     const toastOptions = {position: "bottom-right", duration: 2000};
     const validate = validateFormInputs(email, name);
@@ -12,7 +16,7 @@ const InviteFetchButton = ({email, name}) => {
 
     if(validate) {
       if(listId) {
-        const url = 'http://localhost:3000/list/invite';
+        const url = urlBase+'/list/invite';
         const data = {
           inviteEmail: email,
           listId,

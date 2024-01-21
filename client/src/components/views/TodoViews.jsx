@@ -1,12 +1,14 @@
 /* eslint-disable react/prop-types */
 import { faNoteSticky, faRocket, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { fetchData } from '../../actions/fetch'
 import { pusher } from '../../actions/pusher'
 import DeleteTodoButton from '../buttons/DeleteTodoButton'
+import { UserContext } from '../../context/UserContext'
 
 const TodoViews = ({ state }) => {
+  const {urlBase} = useContext(UserContext);
   const [todos, setTodos] = useState([]);
   const borderColor = state === 'Todo' ? '#000' : state === 'Doing' ? '#efeba9' : '#5ac7aa';
   const listIsActive = window.localStorage.getItem('activeList');
@@ -32,7 +34,7 @@ const TodoViews = ({ state }) => {
     });
     
     async function getTodos() {
-      const url = 'http://localhost:3000/list/getTodo';
+      const url = urlBase+'/list/getTodo';
       const options = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -81,7 +83,7 @@ const TodoViews = ({ state }) => {
   const updateTodo = async (event, idTodo) => {
     const progress = event.target?.value;
     if(progress !== null) {
-      const url = 'http://localhost:3000/list/updateTodo';
+      const url = urlBase+'/list/updateTodo';
       const options = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

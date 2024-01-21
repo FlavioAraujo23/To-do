@@ -7,13 +7,13 @@ import { UserContext } from "../../context/UserContext";
 import ModalFormCreateList from "../forms/ModalFormCreateList";
 
 
-const AsideViewLists = ({ handleClick, mobile, mobileMenu }) => {
+const AsideViewLists = ({ handleClick, mobileMenu }) => {
   const [userLists, setUserList] = useState(null);
   const [activeListId, setActiveListId] = useState(() => {
     const idList = window.localStorage.getItem('activeList');
     return !idList ? null : +idList 
   } );
-  const {login} = useContext(UserContext);
+  const {login, urlBase} = useContext(UserContext);
   const [modal,setModal] = useState();
   const defaultStyles = mobileMenu ? "text-left max-w-max py-2 px-1 hover:bg-gray-200/50" : 'text-left max-w-max py-2 px-4 hover:bg-gray-200/50'
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -24,7 +24,7 @@ const AsideViewLists = ({ handleClick, mobile, mobileMenu }) => {
       if(!idList) {
         window.localStorage.removeItem('activeList');
       }
-      const url = 'http://localhost:3000/list/getList';
+      const url = urlBase+'/list/getList';
       if(window.localStorage.getItem('id') && login ){
       const userId = window.localStorage.getItem('id');
       const options = {

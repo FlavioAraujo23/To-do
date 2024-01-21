@@ -4,8 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import toast, { Toaster } from 'react-hot-toast'
 import validateFormInputs from '../../actions/validateInputs';
 import { fetchData } from '../../actions/fetch';
+import { UserContext } from '../../context/UserContext';
+import { useContext } from 'react';
 
 const CreateTodoButton = ({ title, progress, member, description }) => {
+  const {urlBase} = useContext(UserContext);
   async function handleCreateTodo() {
     const validate = validateFormInputs(title, member, description);
     const listId = window.localStorage.getItem('activeList');
@@ -13,7 +16,7 @@ const CreateTodoButton = ({ title, progress, member, description }) => {
     const toastOptions = {position: "bottom-right", duration: 2000};
     if(validate) {
       if(listId) {
-        const url = 'http://localhost:3000/list/todoCreate';
+        const url = urlBase+'/list/todoCreate';
         const data = {
           title,
           progress,

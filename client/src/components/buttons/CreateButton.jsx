@@ -4,15 +4,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import validateFormInputs from '../../actions/validateInputs'
 import toast, { Toaster } from 'react-hot-toast';
 import { fetchData } from '../../actions/fetch';
+import { UserContext } from '../../context/UserContext';
+import { useContext } from 'react';
 
 const CreateButton = ({type, title, member, description}) => {
+  const {urlBase} = useContext(UserContext);
 
   async function handleCreateList() {
     const validate = validateFormInputs(title, member, description);
     const toastOptions = {position: "bottom-right", duration: 2000};
 
     if(validate) {
-      const url = 'http://localhost:3000/list/create';
+      const url = urlBase+'/list/create';
       const userId = window.localStorage.getItem('id');
       const data = {
         titulo: title,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import SubmitButton from '../buttons/SubmitButton'
 import { fetchData } from '../../actions/fetch';
 import toast, { Toaster } from 'react-hot-toast';
@@ -7,6 +7,7 @@ import ToastFailed from '../customToasted/ToastFailed';
 import validateForm from '../../actions/validateForm';
 import { Link, useNavigate } from 'react-router-dom';
 import useMedia from '../hooks/useMedia';
+import { UserContext } from '../../context/UserContext';
 
 const CreateAccountForm = () => {
   const [nomeCompleto, setNomeCompleto] = useState('');
@@ -15,6 +16,7 @@ const CreateAccountForm = () => {
   const toastOptions = {position: "bottom-right", duration: 2000};
   const navigate = useNavigate();
   const inputStyles = "border-b w-full focus:outline-none focus:border-b-gray-400";
+  const {urlBase} = useContext(UserContext);
   const mobile = useMedia('(max-width: 50rem)');
 
   function validateAform (e){
@@ -43,7 +45,7 @@ const CreateAccountForm = () => {
   }
 
   async function createAccount() {
-    const url = 'http://localhost:3000/auth/createAccount';
+    const url = urlBase+'/auth/createAccount';
     const postData = {
       nome: nomeCompleto,
       email,
@@ -75,11 +77,11 @@ const CreateAccountForm = () => {
     <main className='w-screen flex gap-32'>
     {!mobile &&  
       <div className="w-1/2 h-screen" style={{backgroundColor:'#5AC7AA'}}>
-        <div className="ml-5">relogio</div>
+        <div className="ml-5 hidden">relogio</div>
         <div className="w-32 text-white ml-5">
           <p>Everything you need to do in one place</p>
         </div>
-        <div>imagem</div>
+        <div className='hidden'>imagem</div>
       </div>
     }
     <div className={mobile ? "w-screen h-screen flex justify-center items-center" : "w-full h-full"}>

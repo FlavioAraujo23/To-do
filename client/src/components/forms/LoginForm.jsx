@@ -46,11 +46,11 @@ const LoginForm = () => {
           className="w-1/2 h-screen"
           style={{backgroundColor:'#5AC7AA'}}
         >
-          <div className="ml-5">relogio</div>
+          <div className="ml-5 hidden">relogio</div>
           <div className="w-32 text-white ml-5">
             <p>Everything you need to do in one place</p>
           </div>
-          <div>imagem</div>
+          <div className="hidden">imagem</div>
         </div>
       }
       <div className={mobile ? "w-screen h-screen flex justify-center items-center" : "w-full h-full"}>

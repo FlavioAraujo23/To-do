@@ -3,10 +3,13 @@
 import { faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { fetchData } from '../../actions/fetch';
+import { UserContext } from '../../context/UserContext';
+import { useContext } from 'react';
 
 const DeleteTodoButton = ({ todoId , channelName}) => {
+  const {urlBase} = useContext(UserContext);
   async function handleDeleteTodo() {
-    const url = 'http://localhost:3000/list/deleteTodo';
+    const url = urlBase+'/list/deleteTodo';
     const data = {todoId, channelName}
     const options = {
       method: 'POST',

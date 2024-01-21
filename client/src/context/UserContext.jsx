@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 import { createContext, useState } from "react"
 import { fetchData } from "../actions/fetch";
@@ -5,6 +6,8 @@ import { fetchData } from "../actions/fetch";
 export const UserContext = createContext();
 
 export const UserStorage = ({ children }) => {
+  const urlBase = "http://ec2-54-166-222-200.compute-1.amazonaws.com:3000";
+
   const [dados, setDados] = useState(() => {
     const storedData = window.localStorage.getItem('userData');
     return storedData ? JSON.parse(storedData) : null
@@ -12,7 +15,7 @@ export const UserStorage = ({ children }) => {
   const [login, setLogin] = useState(!!dados);
 
   async function userLogin(email, senha) {
-    const url = 'http://localhost:3000/auth/login'
+    const url = urlBase+'/auth/login';
     const options = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -43,7 +46,7 @@ export const UserStorage = ({ children }) => {
 
 
   return (
-    <UserContext.Provider value={{userLogin, userLogout, dados, login}}>
+    <UserContext.Provider value={{userLogin, userLogout, dados, login, urlBase}}>
       {children}
     </UserContext.Provider>
   )

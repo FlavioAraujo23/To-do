@@ -40,11 +40,14 @@ router.post('/getList', async (req, res) => {
 
 // endpoint para convidar usuário para lista
 router.post('/invite', async (req, res) => {
-  const {inviteEmail, listId, ownerId, name} = req.body;
+  const {inviteEmail, listId, ownerId, name,} = req.body;
   
   try{
     const user = await User.findByEmail(inviteEmail);
     const result = await List.inviteUserForList(listId, user.id, ownerId, name);
+    const userListData = await List.getListsById(ownerId);
+    const channelName = `Invited-list-${user.id}-channel`;
+    await Pusher.createEventInPusher(channelName, userListData, 'INVITED-LIST');
     res.json({result})
   } catch(error) {
     console.log(error);
@@ -58,7 +61,7 @@ router.post('/todoCreate', async (req, res) => {
 
   try {
     const result = await List.createTodoInDb(title, progress, member, description, listId);
-    await Pusher.createEventInPusher(channelName, result);
+    await Pusher.createEventInPusher(channelName, result, 'TODO-CREATED');
     res.json([result.id]);
   } catch(error) {
     console.log(error);

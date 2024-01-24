@@ -15,12 +15,12 @@ class Pusher {
     }
   }
 
-  static async createEventInPusher(channel,task) {
+  static async createEventInPusher(channel,task, event) {
     try{
       const payload = {
         content: task,
       };
-      pusher.trigger(channel, 'TODO-CREATED', payload);
+      pusher.trigger(channel, event, payload);
       return;
     } catch (error) {
       console.error('Erro ao criar event', error);

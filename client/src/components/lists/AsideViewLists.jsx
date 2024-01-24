@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react"
 import { fetchData } from "../../actions/fetch";
 import { UserContext } from "../../context/UserContext";
 import ModalFormCreateList from "../forms/ModalFormCreateList";
+import { pusher } from "../../actions/pusher";
 
 
 const AsideViewLists = ({ handleClick, mobileMenu }) => {
@@ -17,6 +18,12 @@ const AsideViewLists = ({ handleClick, mobileMenu }) => {
   const [modal,setModal] = useState();
   const defaultStyles = mobileMenu ? "text-left max-w-max py-2 px-1 hover:bg-gray-200/50" : 'text-left max-w-max py-2 px-4 hover:bg-gray-200/50'
   const [dataLoaded, setDataLoaded] = useState(false);
+  const [channelName, setChannelName] = useState(() => {
+    const userId = window.localStorage.getItem('id');
+    const newChannelName = `Invited-list-${userId}-channel`;
+    return  newChannelName;
+  });
+  const channel = pusher.subscribe(channelName);
 
   useEffect( () => {
     async function getListsById() {
@@ -46,12 +53,22 @@ const AsideViewLists = ({ handleClick, mobileMenu }) => {
   const handleListClick = (listId) => {
     handleClick(listId);
     setActiveListId(listId);
-    window.localStorage.setItem('activeList', listId)
+    window.localStorage.setItem('activeList', listId);
   };
 
   const fecharModal = () => {
     setModal(false);
   };
+
+    const updateLists = () => {
+      window.location.reload();
+      return () => {
+        channel.unbind('INVITED-LIST',updateLists)
+      }
+    }
+    channel.bind('INVITED-LIST',updateLists);
+
+
 
   return (
     <>

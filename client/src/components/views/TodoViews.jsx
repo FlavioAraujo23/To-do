@@ -49,7 +49,7 @@ const TodoViews = ({ state }) => {
     if (listId) {
       getTodos();
     }
-  }, [listIsActive, state, update]);
+  }, [listIsActive, state, update, urlBase]);
 
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const TodoViews = ({ state }) => {
         return () => {
           channel.unbind('TODO-CREATED', updateTodo);
         }
-  }, []);
+  }, [channel, state]);
 
   useEffect(() => {
     const handleUpdateTodo = (data) => {
@@ -78,7 +78,7 @@ const TodoViews = ({ state }) => {
     return () => {
       channel.unbind('TODO-DELETED', handleUpdateTodo);
     };
-  }, []);
+  }, [channel]);
 
   const updateTodo = async (event, idTodo) => {
     const progress = event.target?.value;
@@ -94,30 +94,35 @@ const TodoViews = ({ state }) => {
     }
   }
 
-  useEffect(() => {
-    function eventUpdateTodo({ content }) {
-      setTodos((prevTodos) => {
-        const existingIndex = prevTodos.findIndex((todo) => todo.id === content.id);
-        if (existingIndex !== -1) {
-          const updatedTodos = [...prevTodos];
-          updatedTodos[existingIndex] = content;
-          if (state === content.progresso) {
-            return updatedTodos;
-          } else {
-            return prevTodos;
-          }
+  function eventUpdateTodo({ content }) {
+    setTodos((prevTodos) => {
+      const existingIndex = prevTodos.findIndex((todo) => todo.id === content.id);
+  
+      if (existingIndex !== -1) {
+        const updatedTodos = [...prevTodos];
+        updatedTodos[existingIndex] = content;
+  
+        // Verifica se o progresso é o mesmo
+        if (content.progresso === state) {
+          setUpdate(true);
+          return updatedTodos;
         } else {
-          return state === content.progresso ? [...prevTodos, content] : prevTodos;
+          // Remove a tarefa se o progresso for diferente
+          return updatedTodos.filter(todo => todo.id !== content.id);
         }
-      });
+      } else {
+        // Adiciona à lista se o progresso for o mesmo
+        return content.progresso === state ? [...prevTodos, content] : prevTodos;
+      }
+    });
       setUpdate(true)
+      return () => {
+        channel.unbind('TODO-UPDATED', eventUpdateTodo);
+      }
     }
 
     channel.bind('TODO-UPDATED',eventUpdateTodo);
-    return () => {
-      channel.unbind('TODO-UPDATED', eventUpdateTodo);
-    }
-  }, []);
+
 
 
   return (

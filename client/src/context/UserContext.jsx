@@ -6,7 +6,7 @@ import { fetchData } from "../actions/fetch";
 export const UserContext = createContext();
 
 export const UserStorage = ({ children }) => {
-  const urlBase = "http://ec2-54-166-222-200.compute-1.amazonaws.com:3000";
+  const urlBase = " http://localhost:3000";
 
   const [dados, setDados] = useState(() => {
     const storedData = window.localStorage.getItem('userData');

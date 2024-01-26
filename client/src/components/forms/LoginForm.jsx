@@ -27,17 +27,17 @@ const LoginForm = () => {
     const dados = await userLogin(email, senha);
     const toastOptions = {position: "bottom-right", duration: 2000}
 
-    !dados.message ? 
-    toast.custom(
-      <ToastSuccess
-        title='Login successfully' 
-      />, toastOptions) &&
-      setTimeout(() => navigate('/list'), 1000) :
-    toast.custom(
-      <ToastFailed 
-        title='Failed to login' 
-        subtitle='An error occured, check if the password and/or email are correct' 
-      />, toastOptions)
+    dados.status === 401 ? 
+      toast.custom(
+        <ToastFailed 
+          title='Failed to login' 
+          subtitle='An error occured, check if the password and/or email are correct' 
+        />, toastOptions) :
+        toast.custom(
+          <ToastSuccess
+            title='Login successfully' 
+          />, toastOptions) &&
+          setTimeout(() => navigate('/list'), 1000)
   }
 
   return (

@@ -7,6 +7,16 @@ const router = express.Router();
 // endpoint para login
 router.post('/login', async (req, res) => {
   const {email, senha} = req.body;
+  console.log(email, senha)
+   // Validação de email
+   const emailIsValid = /\S+@\S+\.\S+/.test(email);
+
+   // Validação de senha
+   const passwordIsValid = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{8,}$/.test(senha);
+   
+  if(!passwordIsValid || !emailIsValid) {
+    return res.status(401).json({ message: 'Credenciais invalidas'}); 
+  }
 
   try {
     const user = await User.findByEmail(email);

@@ -4,7 +4,6 @@ import { fetchData } from '../../actions/fetch';
 import toast, { Toaster } from 'react-hot-toast';
 import ToastSuccess from '../customToasted/ToastSuccess';
 import ToastFailed from '../customToasted/ToastFailed';
-import validateForm from '../../actions/validateForm';
 import { Link, useNavigate } from 'react-router-dom';
 import useMedia from '../hooks/useMedia';
 import { UserContext } from '../../context/UserContext';
@@ -13,38 +12,14 @@ const CreateAccountForm = () => {
   const [nomeCompleto, setNomeCompleto] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const toastOptions = {position: "bottom-right", duration: 2000};
   const navigate = useNavigate();
   const inputStyles = "border-b w-full focus:outline-none focus:border-b-gray-400";
   const {urlBase} = useContext(UserContext);
   const mobile = useMedia('(max-width: 50rem)');
 
-  function validateAform (e){
-    e.preventDefault();
-    const dadosValidos = validateForm(email, senha);
-    if(dadosValidos.emailIsValidate === false) {
-      toast.custom(
-        <ToastFailed 
-          title='Failed to register'
-          subtitle='Enter a valid email'
-        />, toastOptions
-      )
-      return;
-    }
-
-    if(dadosValidos.passwordIsValidate === false) {
-      toast.custom(
-        <ToastFailed
-          title='Failed to register'
-          subtitle='Your password must have at least 8 characters, letters and numbers'
-        />, toastOptions
-      )
-      return;
-    }
-    createAccount();
-  }
-
-  async function createAccount() {
+  async function createAccount(event) {
+    event.preventDefault();
+    const toastOptions = {position: "bottom-right", duration: 2000};
     const url = urlBase+'/auth/createAccount';
     const postData = {
       nome: nomeCompleto,
@@ -60,7 +35,34 @@ const CreateAccountForm = () => {
 
     const dados = await fetchData(url, options);
 
-    const toastOptions = {position: "bottom-right", duration: 2000}
+    if(dados.status === 401) {
+      const data = await dados.json();
+      if(data.error === 'invalid' || data.error === 'name') {
+        toast.custom(
+          <ToastFailed 
+            title='Failed to register'
+            subtitle='Fill the fields correctly!'
+          />, toastOptions
+        );
+        return
+      }
+
+      data.error === 'email' ?
+      toast.custom(
+        <ToastFailed 
+          title='Failed to register'
+          subtitle='Enter a valid email'
+        />, toastOptions
+      ) :
+      toast.custom(
+        <ToastFailed
+          title='Failed to register'
+          subtitle='Your password must have at least 8 characters, letters and numbers'
+        />, toastOptions
+      )
+      return;
+    }
+
     if (dados.userId){
       toast.custom(<ToastSuccess title={'Registration completed'}/>, toastOptions)
       setTimeout(() => {
@@ -93,7 +95,7 @@ const CreateAccountForm = () => {
           </svg>
         </div>
       </div>}
-        <form className={mobile ? "max-w-sm" : "max-w-xs flex flex-col mt-32 gap-4"} onSubmit={validateAform}>
+        <form className={mobile ? "max-w-sm" : "max-w-xs flex flex-col mt-32 gap-4"} onSubmit={createAccount}>
           <h2 className="font-bold text-center text-xl">Create <br /> Account</h2>  
             <input
               type="text"

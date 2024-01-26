@@ -40,6 +40,23 @@ router.post('/login', async (req, res) => {
 //endpoint para cadastro de usuário
 router.post('/createAccount', async (req, res) => {
   const {nome, email, senha} = req.body;
+  const emailIsValid = /\S+@\S+\.\S+/.test(email);
+  const passwordIsValid = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{8,}$/.test(senha);
+
+  if(nome.length === 0) {
+    return res.status(401).json({ message: 'Credenciais invalidas', error: 'name'}); 
+  }
+
+  if(!emailIsValid && !passwordIsValid) {
+    return res.status(401).json({ message: 'Credenciais invalidas', error: 'invalid'}); 
+  }
+
+  if(!emailIsValid) {
+    return res.status(401).json({ message: 'Credenciais invalidas', error: 'email'}); 
+  } else if (!passwordIsValid) {
+    return res.status(401).json({ message: 'Credenciais invalidas', error: 'password'}); 
+  }
+
   try{
     const existingUser = await User.findByEmail(email);
     if(existingUser) {

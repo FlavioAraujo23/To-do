@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '15'
+        
     - name: Checkout code
       uses: actions/checkout@v2
 
@@ -21,4 +26,3 @@ jobs:
         echo "Y" | vercel --prod ./client
       env:
         VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        

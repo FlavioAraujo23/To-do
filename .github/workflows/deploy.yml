@@ -22,7 +22,7 @@ jobs:
       run: npm install -g vercel
 
     - name: Vercel login
-      run: vercel login -t ${{ secrets.VERCEL_TOKEN  }}
+      run: vercel switch
 
     - name: Set up and deploy to Vercel
       run: |

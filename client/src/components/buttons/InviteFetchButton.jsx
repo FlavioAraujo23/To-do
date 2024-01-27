@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import toast, { Toaster } from "react-hot-toast";
-import validateFormInputs from "../../actions/validateInputs"
 import { fetchData } from "../../actions/fetch";
 import { UserContext } from "../../context/UserContext";
 import { useContext } from "react";
@@ -10,11 +9,15 @@ const InviteFetchButton = ({email, name}) => {
 
   async function handleInvitePeople() {
     const toastOptions = {position: "bottom-right", duration: 2000};
-    const validate = validateFormInputs(email, name);
     const listId = window.localStorage.getItem('activeList');
     const ownerId = window.localStorage.getItem('id');
 
-    if(validate) {
+    const userData = window.localStorage.getItem('userData');
+    if(userData.email === email) {
+      toast.error('Send a email for different user', toastOptions);
+      return;
+    }
+
       if(listId) {
         const url = urlBase+'/list/invite';
         const data = {
@@ -31,17 +34,25 @@ const InviteFetchButton = ({email, name}) => {
 
         const result = await fetchData(url, options);
 
-        result ?
+        if(result.status === 449) {
+          toast.error('Error, the invite values is empty!', toastOptions);
+          return
+        }
+
+        if(result.error === 'email') {
+          toast.error('Error, enter a valid email', toastOptions)
+          return
+        }
+        
+        result.ok ?
         toast.success('Success, the invite is send!', toastOptions) :
         toast.error('Error, user not find!');
         
       } else {
         toast.error('Error, select a list for send invite', toastOptions);
       }
-    } else {
-      toast.error('Error, the invite values is empty!', toastOptions);
-    }
   }
+
   return (
     <>
       <button

@@ -9,6 +9,10 @@ const router = express.Router();
 router.post('/create', async (req, res) => {
   const { titulo, descricao, membro, userId } = req.body;
 
+  if(titulo.length === 0 || descricao.length === 0 || membro.length === 0) {
+    return res.status(449).json({ message: 'Valores vazios'}); 
+  }
+  
   const listData = {titulo,
                     descricao,
                     membro,
@@ -41,6 +45,15 @@ router.post('/getList', async (req, res) => {
 // endpoint para convidar usuário para lista
 router.post('/invite', async (req, res) => {
   const {inviteEmail, listId, ownerId, name,} = req.body;
+  const emailIsValid = /\S+@\S+\.\S+/.test(inviteEmail);
+
+  if(!emailIsValid) {
+    return res.status(401).json({ message: 'Credenciais invalidas', error: 'email'}); 
+  }
+
+  if(name.length === 0) {
+    return res.status(449).json({ message: 'Valores vazios'}); 
+  }
   
   try{
     const user = await User.findByEmail(inviteEmail);
@@ -58,6 +71,10 @@ router.post('/invite', async (req, res) => {
 // endpoint para criar todo
 router.post('/todoCreate', async (req, res) => {
   const {title, progress, member, description, listId, channelName} = req.body;
+
+  if(title.length === 0 || description.length === 0 || member.length === 0) {
+    return res.status(449).json({ message: 'Valores vazios'}); 
+  }
 
   try {
     const result = await List.createTodoInDb(title, progress, member, description, listId);

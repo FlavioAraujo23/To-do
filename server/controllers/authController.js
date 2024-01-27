@@ -7,7 +7,7 @@ const router = express.Router();
 // endpoint para login
 router.post('/login', async (req, res) => {
   const {email, senha} = req.body;
-  console.log(email, senha)
+  
    // Validação de email
    const emailIsValid = /\S+@\S+\.\S+/.test(email);
 

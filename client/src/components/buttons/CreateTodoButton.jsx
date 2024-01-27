@@ -2,7 +2,6 @@
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import toast, { Toaster } from 'react-hot-toast'
-import validateFormInputs from '../../actions/validateInputs';
 import { fetchData } from '../../actions/fetch';
 import { UserContext } from '../../context/UserContext';
 import { useContext } from 'react';
@@ -10,11 +9,10 @@ import { useContext } from 'react';
 const CreateTodoButton = ({ title, progress, member, description }) => {
   const {urlBase} = useContext(UserContext);
   async function handleCreateTodo() {
-    const validate = validateFormInputs(title, member, description);
     const listId = window.localStorage.getItem('activeList');
     const channelName = window.localStorage.getItem('channelName') || `list-${listId}-channel`;
     const toastOptions = {position: "bottom-right", duration: 2000};
-    if(validate) {
+
       if(listId) {
         const url = urlBase+'/list/todoCreate';
         const data = {
@@ -33,17 +31,18 @@ const CreateTodoButton = ({ title, progress, member, description }) => {
 
         const result = await fetchData(url, options);
 
-        result ?
-        toast.success('Success, the todo is created!', toastOptions) :
-        toast.error('Error!');
+        if(result.status === 449) {
+          toast.error('Error, the todo values is empty!', toastOptions);
+          return
+        }
+
+        result && toast.success('Success, the todo is created!', toastOptions)
         
       } else {
         toast.error('Error, select a list for create todo', toastOptions);
       }
-    } else {
-      toast.error('Error, the todo values is empty!', toastOptions);
-    }
   }
+
   return (
     <>
       <button

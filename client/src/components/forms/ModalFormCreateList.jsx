@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { faX } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import CreateButton from '../buttons/CreateButton'
+import CreateListButton from '../buttons/CreateListButton'
 import { useState } from 'react'
 
 const ModalFormCreateList = ({estadoModal, fecharModal }) => {
@@ -51,7 +51,7 @@ const ModalFormCreateList = ({estadoModal, fecharModal }) => {
                 onChange={({target}) => setDescription(target.value)}
               />
             </label>
-            <CreateButton type="list" title={title} member={member} description={description} />
+            <CreateListButton type="list" title={title} member={member} description={description} />
           </form>
         </div>
       </div>

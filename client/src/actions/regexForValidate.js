@@ -1,1 +1,0 @@
-export const validateInputs = new RegExp(/^\s*$/);

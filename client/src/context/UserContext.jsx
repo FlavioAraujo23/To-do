@@ -6,7 +6,7 @@ import { fetchData } from "../actions/fetch";
 export const UserContext = createContext();
 
 export const UserStorage = ({ children }) => {
-  const urlBase = "https://ec2-54-166-222-200.compute-1.amazonaws.com";
+  const urlBase = "https://tasklist.devbyflavio.com.br/auth/createAccount";
 
   const [dados, setDados] = useState(() => {
     const storedData = window.localStorage.getItem('userData');

@@ -1,20 +1,24 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 const useMedia = (media) => {
   const [match, setMatch] = useState(null);
 
   useEffect(() => {
-    function changeMatch() {
-      const {matches} = window.matchMedia(media);
-      setMatch(matches)
+    function checkMedia() {
+      const { matches } = window.matchMedia(media);
+      setMatch(matches);
     }
-    window.addEventListener('resize', changeMatch);
+
+    checkMedia();
+
+    window.addEventListener('orientationchange', checkMedia);
+
     return () => {
-      window.removeEventListener('resize', changeMatch)
-    }
+      window.removeEventListener('orientationchange', checkMedia);
+    };
   }, [media]);
 
   return match;
-}
+};
 
-export default useMedia
+export default useMedia;

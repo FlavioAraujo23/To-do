@@ -51,6 +51,7 @@ const InviteFetchButton = ({email, name}) => {
       } else {
         toast.error('Error, select a list for send invite', toastOptions);
       }
+      setTimeout(() => toast.remove(), 2000);
   }
 
   return (

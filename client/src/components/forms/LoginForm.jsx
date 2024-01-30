@@ -38,6 +38,7 @@ const LoginForm = () => {
             title='Login successfully' 
           />, toastOptions) &&
           setTimeout(() => navigate('/list'), 1000)
+          setTimeout(() => toast.remove(), 2000);
   }
 
   return (

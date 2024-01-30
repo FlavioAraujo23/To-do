@@ -37,6 +37,7 @@ const CreateListButton = ({type, title, member, description}) => {
       window.localStorage.setItem('channelName', result.channel);
       setTimeout(() => window.location.reload(), 1000);
     }
+    setTimeout(() => toast.remove(), 2000);
   }
   
   return (

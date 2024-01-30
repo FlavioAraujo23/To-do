@@ -73,6 +73,7 @@ const CreateAccountForm = () => {
     if (dados.message === "Email já cadastrado") {
       toast.custom(<ToastFailed title='Failed to register' subtitle='User already exists'/>, toastOptions)
     }
+    setTimeout(() => toast.remove(), 2000);
   }
   
   return (

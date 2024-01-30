@@ -41,6 +41,7 @@ const CreateTodoButton = ({ title, progress, member, description }) => {
       } else {
         toast.error('Error, select a list for create todo', toastOptions);
       }
+      setTimeout(() => toast.remove(), 2000);
   }
 
   return (

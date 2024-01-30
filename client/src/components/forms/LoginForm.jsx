@@ -12,7 +12,6 @@ const LoginForm = () => {
   const [senha, setSenha] = useState('');
   const navigate = useNavigate();
   const {userLogin, login} = useContext(UserContext);
-  const inputStyles = "border-b w-full focus:outline-none focus:border-b-gray-400";
   const mobile = useMedia('(max-width: 50rem)');
 
   useEffect(() => {
@@ -71,7 +70,7 @@ const LoginForm = () => {
               <input 
                 type="text"
                 placeholder='Email Address'
-                className={mobile ? inputStyles + " pt-2" : inputStyles }
+                className={mobile ? "border-b w-full focus:outline-none focus:border-b-gray-400" + " pt-2" : "border-b w-full focus:outline-none focus:border-b-gray-400" }
                 value={email}
                 onChange={({ target }) => setEmail(target.value)}
               />
@@ -79,7 +78,7 @@ const LoginForm = () => {
             <label htmlFor="">
               <input 
                 type="password" 
-                className={mobile ? inputStyles + " pt-2" : inputStyles }
+                className={mobile ? "border-b w-full focus:outline-none focus:border-b-gray-400" + " pt-2" : "border-b w-full focus:outline-none focus:border-b-gray-400" }
                 value={senha}
                 onChange={({ target }) => setSenha(target.value)}
                 placeholder='Password'

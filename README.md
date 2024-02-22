@@ -41,9 +41,9 @@ Contribuições são bem-vindas! Se você deseja melhorar ou expandir este proje
 ##
 Como Contribuir:
 
-Faça um fork do repositório.
-Clone o fork para o seu ambiente local.
-Crie uma branch para a sua contribuição (git checkout -b feature/nova-feature).
-Faça as alterações desejadas e commit (git commit -am 'Adiciona nova feature').
-Faça push para a sua branch (git push origin feature/nova-feature).
-Abra uma solicitação de pull solicitando a inclusão das suas alterações.
+<p>Faça um fork do repositório.</p>
+<p>Clone o fork para o seu ambiente local.</p>
+<p>Crie uma branch para a sua contribuição (git checkout -b feature/nova-feature).</p>
+<p>Faça as alterações desejadas e commit (git commit -am 'Adiciona nova feature').</p>
+<p>Faça push para a sua branch (git push origin feature/nova-feature).</p>
+<p>Abra uma solicitação de pull solicitando a inclusão das suas alterações.</p>

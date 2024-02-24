@@ -17,11 +17,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '16'
-        
-    - name: Verificar Diretório Raiz
-      run: |
-        echo "Diretório raiz do projeto: $GITHUB_WORKSPACE"
-        
+                
     - name: Checkout code
       uses: actions/checkout@v2
 
